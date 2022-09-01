@@ -4,6 +4,20 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const connectionString = process.env.MONGO_CON
+console.log("Connection is" + connectionString)
+const mongoose = require('mongoose');
+mongoose.connect(connectionString,
+{useNewUrlParser: true, useUnifiedTopology: true});
+
+var db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once("open", function(){
+  console.log("Connection to DB succeded");
+})
+
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -21,12 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const connectionString =
-process.env.MONGO_CON
-mongoose = require('mongoose');
-mongoose.connect(connectionString,
-{useNewUrlParser: true,
-useUnifiedTopology: true});
+
 
 
 app.use('/', indexRouter);
